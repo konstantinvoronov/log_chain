@@ -21,7 +21,7 @@ class LogSnapshotBranchStringSerializer {
 
     buffer.writeln(
       '[${snapshot.level.name.toUpperCase()}] '
-          '${snapshot.name} | ${snapshot.duration.inMilliseconds}ms',
+      '${snapshot.name} | ${snapshot.duration.inMilliseconds}ms',
     );
     buffer.writeln('operationId: ${snapshot.operationId}');
     buffer.writeln('path: ${snapshot.path}');
@@ -32,17 +32,13 @@ class LogSnapshotBranchStringSerializer {
     return buffer.toString().trimRight();
   }
 
-  void _writeSnapshot(
-      StringBuffer buffer,
-      LogSnapshot snapshot,
-      int indent,
-      ) {
+  void _writeSnapshot(StringBuffer buffer, LogSnapshot snapshot, int indent) {
     final prefix = '  ' * indent;
 
     buffer.writeln(
       '$prefix${snapshot.name} '
-          '[${_time(snapshot.startedAt)}'
-          ' | ${snapshot.duration.inMilliseconds}ms]',
+      '[${_time(snapshot.startedAt)}'
+      ' | ${snapshot.duration.inMilliseconds}ms]',
     );
 
     for (final entry in snapshot.entries) {
@@ -55,18 +51,14 @@ class LogSnapshotBranchStringSerializer {
     }
   }
 
-  void _writeEntry(
-      StringBuffer buffer,
-      LogEntry entry,
-      int indent,
-      ) {
+  void _writeEntry(StringBuffer buffer, LogEntry entry, int indent) {
     final prefix = '  ' * indent;
 
     buffer.writeln(
       '$prefix[${_time(entry.timestamp)}'
-          ' | +${entry.branchOffset.inMilliseconds}ms branch'
-          ' | #${entry.sequence.toString().padLeft(3, '0')}] '
-          '${entry.message}',
+      ' | +${entry.branchOffset.inMilliseconds}ms branch'
+      ' | #${entry.sequence.toString().padLeft(3, '0')}] '
+      '${entry.message}',
     );
   }
 

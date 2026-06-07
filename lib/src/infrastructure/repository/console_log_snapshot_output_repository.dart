@@ -5,9 +5,7 @@ class ConsoleLogSnapshotOutputRepository
     implements LogSnapshotOutputRepository {
   final bool useFlatTimeOutput;
 
-  const ConsoleLogSnapshotOutputRepository({
-    this.useFlatTimeOutput = false,
-  });
+  const ConsoleLogSnapshotOutputRepository({this.useFlatTimeOutput = false});
 
   @override
   Future<void> output(LogSnapshot snapshot) async {

@@ -21,15 +21,14 @@ class JsonFileLogSnapshotOutputRepository
       await directory.create(recursive: true);
     }
 
-    final fileName = fileNameBuilder?.call(snapshot) ??
+    final fileName =
+        fileNameBuilder?.call(snapshot) ??
         '${snapshot.operationId}_${snapshot.id}.logchain.json';
 
     final file = File('${directory.path}/$fileName');
 
     const encoder = JsonEncoder.withIndent('  ');
 
-    await file.writeAsString(
-      encoder.convert(snapshot.toJson()),
-    );
+    await file.writeAsString(encoder.convert(snapshot.toJson()));
   }
 }

@@ -46,9 +46,9 @@ class LogBranch implements IlogBranch {
 
   @override
   LogBranch branch(
-      String name, {
-        bool Function(LogSnapshot snapshot)? logWhen,
-      }) {
+    String name, {
+    bool Function(LogSnapshot snapshot)? logWhen,
+  }) {
     _assertOpen();
 
     final startedAt = DateTime.now();
@@ -69,13 +69,10 @@ class LogBranch implements IlogBranch {
   @override
   Future<T> asyncBranch<T>(
       String name,
-      Future<T> Function(LogBranch log) run, {
+      Future<T> Function(IlogBranch log) run, {
         bool Function(LogSnapshot snapshot)? logWhen,
       }) async {
-    final child = branch(
-      name,
-      logWhen: logWhen,
-    );
+    final child = branch(name, logWhen: logWhen);
 
     try {
       return await run(child);
@@ -85,19 +82,18 @@ class LogBranch implements IlogBranch {
         error: error,
         stackTrace: stackTrace,
       );
-
       rethrow;
     } finally {
-      await child.close();
+      child.close();
     }
   }
 
   @override
   void add(
-      String message, {
-        LogLevel level = LogLevel.info,
-        Map<String, Object?> extra = const {},
-      }) {
+    String message, {
+    LogLevel level = LogLevel.info,
+    Map<String, Object?> extra = const {},
+  }) {
     _assertOpen();
 
     final timestamp = DateTime.now();
@@ -117,48 +113,27 @@ class LogBranch implements IlogBranch {
   }
 
   @override
-  void debug(
-      String message, {
-        Map<String, Object?> extra = const {},
-      }) {
-    add(
-      message,
-      level: LogLevel.debug,
-      extra: extra,
-    );
+  void debug(String message, {Map<String, Object?> extra = const {}}) {
+    add(message, level: LogLevel.debug, extra: extra);
   }
 
   @override
-  void info(
-      String message, {
-        Map<String, Object?> extra = const {},
-      }) {
-    add(
-      message,
-      level: LogLevel.info,
-      extra: extra,
-    );
+  void info(String message, {Map<String, Object?> extra = const {}}) {
+    add(message, level: LogLevel.info, extra: extra);
   }
 
   @override
-  void warning(
-      String message, {
-        Map<String, Object?> extra = const {},
-      }) {
-    add(
-      message,
-      level: LogLevel.warning,
-      extra: extra,
-    );
+  void warning(String message, {Map<String, Object?> extra = const {}}) {
+    add(message, level: LogLevel.warning, extra: extra);
   }
 
   @override
   void error(
-      String message, {
-        Object? error,
-        StackTrace? stackTrace,
-        Map<String, Object?> extra = const {},
-      }) {
+    String message, {
+    Object? error,
+    StackTrace? stackTrace,
+    Map<String, Object?> extra = const {},
+  }) {
     _assertOpen();
 
     final timestamp = DateTime.now();
@@ -181,17 +156,12 @@ class LogBranch implements IlogBranch {
 
   @override
   String fail(
-      String message, {
-        Object? error,
-        StackTrace? stackTrace,
-        Map<String, Object?> extra = const {},
-      }) {
-    this.error(
-      message,
-      error: error,
-      stackTrace: stackTrace,
-      extra: extra,
-    );
+    String message, {
+    Object? error,
+    StackTrace? stackTrace,
+    Map<String, Object?> extra = const {},
+  }) {
+    this.error(message, error: error, stackTrace: stackTrace, extra: extra);
 
     return message;
   }
@@ -250,10 +220,27 @@ class LogBranch implements IlogBranch {
   }
 
   @override
-  T syncBranch<T>(String name, {bool Function(LogSnapshot snapshot)? logWhen, required T Function(LogBranch log) run}) {
-    // TODO: implement syncBranch
-    throw UnimplementedError();
+  T syncBranch<T>(
+      String name,
+      T Function(IlogBranch log) run, {
+        bool Function(LogSnapshot snapshot)? logWhen,
+      }) {
+    final child = branch(name, logWhen: logWhen);
+
+    try {
+      return run(child);
+    } catch (error, stackTrace) {
+      child.error(
+        'Unhandled exception',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      rethrow;
+    } finally {
+      child.close();
+    }
   }
+
 
   @override
   String toBranchString() {

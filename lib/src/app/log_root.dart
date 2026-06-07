@@ -1,7 +1,6 @@
 import '../../log_chain.dart';
 import '../domain/app/i_log_branch.dart';
 import '../domain/model/log_snapshot.dart';
-import '../domain/model/log_type.dart';
 
 import 'log_branch.dart';
 
@@ -71,9 +70,9 @@ class LogRoot {
   }
 
   IlogBranch branch(
-      String name, {
-        bool Function(LogSnapshot snapshot)? logWhen,
-      }) {
+    String name, {
+    bool Function(LogSnapshot snapshot)? logWhen,
+  }) {
     _assertOpen();
 
     return LogBranch(
@@ -90,27 +89,20 @@ class LogRoot {
   }
 
   Future<T> asyncBranch<T>(
-      String name,
-      Future<T> Function(IlogBranch log) run, {
-        bool Function(LogSnapshot snapshot)? logWhen,
-      }) async {
-    final child = branch(
-      name,
-      logWhen: logWhen,
-    );
+    String name,
+    Future<T> Function(IlogBranch log) run, {
+    bool Function(LogSnapshot snapshot)? logWhen,
+  }) async {
+    final child = branch(name, logWhen: logWhen);
 
     try {
       return await run(child);
     } catch (error, stackTrace) {
-      child.error(
-        'Unhandled exception',
-        error: error,
-        stackTrace: stackTrace,
-      );
+      child.error('Unhandled exception', error: error, stackTrace: stackTrace);
 
       rethrow;
     } finally {
-      await child.close();
+      child.close();
     }
   }
 
@@ -120,8 +112,7 @@ class LogRoot {
   }
 
   Future<void> processAcceptedSnapshot(LogSnapshot snapshot) async {
-    if (logType == LogType.logAsReceive ||
-        logType == LogType.logNowAndThen) {
+    if (logType == LogType.logAsReceive || logType == LogType.logNowAndThen) {
       await _output(snapshot);
     }
   }
@@ -151,8 +142,7 @@ class LogRoot {
     _closed = true;
     _finishedAt = DateTime.now();
 
-    if (logType == LogType.logOnClose ||
-        logType == LogType.logNowAndThen) {
+    if (logType == LogType.logOnClose || logType == LogType.logNowAndThen) {
       await _output(snapshot());
     }
   }

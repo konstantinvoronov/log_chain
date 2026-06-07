@@ -1,5 +1,6 @@
 import '../model/log_entry.dart';
 import '../model/log_snapshot.dart';
+
 /*
 [ERROR] LoadDashboard | 246ms
 operationId: operation_1
@@ -17,10 +18,7 @@ class LogSnapshotFlatTimeStringSerializer {
   String serialize(LogSnapshot snapshot) {
     final entries = <_FlatEntry>[];
 
-    _collectEntries(
-      snapshot,
-      entries,
-    );
+    _collectEntries(snapshot, entries);
 
     entries.sort((a, b) {
       return a.entry.sequence.compareTo(b.entry.sequence);
@@ -30,7 +28,7 @@ class LogSnapshotFlatTimeStringSerializer {
 
     buffer.writeln(
       '[${snapshot.level.name.toUpperCase()}] '
-          '${snapshot.name} | ${snapshot.duration.inMilliseconds}ms',
+      '${snapshot.name} | ${snapshot.duration.inMilliseconds}ms',
     );
     buffer.writeln('operationId: ${snapshot.operationId}');
     buffer.writeln('path: ${snapshot.path}');
@@ -41,27 +39,19 @@ class LogSnapshotFlatTimeStringSerializer {
 
       buffer.writeln(
         '[${_time(entry.timestamp)}'
-            ' | +${entry.rootOffset.inMilliseconds}ms root'
-            ' | #${entry.sequence.toString().padLeft(3, '0')}] '
-            '${item.path.padRight(40)} '
-            '${entry.message}',
+        ' | +${entry.rootOffset.inMilliseconds}ms root'
+        ' | #${entry.sequence.toString().padLeft(3, '0')}] '
+        '${item.path.padRight(40)} '
+        '${entry.message}',
       );
     }
 
     return buffer.toString().trimRight();
   }
 
-  void _collectEntries(
-      LogSnapshot snapshot,
-      List<_FlatEntry> result,
-      ) {
+  void _collectEntries(LogSnapshot snapshot, List<_FlatEntry> result) {
     for (final entry in snapshot.entries) {
-      result.add(
-        _FlatEntry(
-          path: snapshot.path,
-          entry: entry,
-        ),
-      );
+      result.add(_FlatEntry(path: snapshot.path, entry: entry));
     }
 
     for (final child in snapshot.children) {
@@ -83,8 +73,5 @@ class _FlatEntry {
   final String path;
   final LogEntry entry;
 
-  const _FlatEntry({
-    required this.path,
-    required this.entry,
-  });
+  const _FlatEntry({required this.path, required this.entry});
 }
