@@ -3,7 +3,6 @@ import 'dart:io';
 
 import '../../domain/model/log_snapshot.dart';
 import '../../domain/repository/log_snapshot_output_repository.dart';
-import '../../domain/serializer/log_snapshot_json_serializer.dart';
 
 class JsonFileLogSnapshotOutputRepository
     implements LogSnapshotOutputRepository {
