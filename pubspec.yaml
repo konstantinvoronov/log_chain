@@ -1,15 +1,22 @@
 name: log_chain
-description: A starting point for Dart libraries or applications.
+description: A Dart package for structured diagnostic log chains, allowing async and sync flows to be captured as branch snapshots, rendered as text, or exported as JSON.
 version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+
+repository: https://github.com/konstantinvoronov/log_chain
+issue_tracker: https://github.com/konstantinvoronov/log_chain/issues
 
 environment:
-  sdk: ^3.10.8
+  sdk: ^3.8.1
 
-# Add regular dependencies here.
+topics:
+  - logging
+  - diagnostics
+  - debugging
+  - dart
+  - json
+
 dependencies:
-  # path: ^1.9.0
 
 dev_dependencies:
-  lints: ^6.0.0
-  test: ^1.25.6
+  lints: ^5.0.0
+  test: ^1.24.0
